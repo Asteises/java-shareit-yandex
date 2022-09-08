@@ -1,14 +1,14 @@
-package ru.practicum.shareit.item.services;
+package ru.practicum.shareit.item.repositoryes;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.handler.exceptions.ItemNotFound;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
 
-@Service
-public interface ItemService {
+@Repository
+public interface ItemStorage {
 
     Item save(ItemDto itemDto, long userId);
 
@@ -20,5 +20,5 @@ public interface ItemService {
 
     Item findById(long itemId) throws ItemNotFound;
 
-    List<Item> findAllByUserId(long userId);
+    List<Item> findAllByUserId(long userId) throws ItemNotFound;
 }

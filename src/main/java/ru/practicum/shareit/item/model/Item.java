@@ -15,6 +15,7 @@ import ru.practicum.shareit.user.model.User;
 @Setter
 public class Item {
 
+    //TODO Как без БД создать генерируемый
     private long id;
     private String name;
     private String description;

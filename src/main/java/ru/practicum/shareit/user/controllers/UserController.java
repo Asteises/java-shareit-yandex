@@ -15,14 +15,18 @@ import java.util.List;
 @RequestMapping(path = "/users")
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping
     public User save(@RequestBody UserDto userDto) {
         return userService.save(userDto);
     }
 
-    @PutMapping("/{userId}")
+    @PatchMapping("/{userId}")
     public User put(@RequestBody UserDto userDto, @PathVariable long userId) throws UserNotFound {
         return userService.put(userDto, userId);
     }

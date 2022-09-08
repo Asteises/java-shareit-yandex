@@ -12,6 +12,7 @@ import java.util.Random;
 public class ItemMapper {
 
     private RequestService requestService;
+    private static long id;
 
     public ItemDto toItemDto(Item item) {
         return new ItemDto(
@@ -26,7 +27,8 @@ public class ItemMapper {
     public Item toItem(ItemDto itemDto) {
         Item item = new Item();
         ItemRequest itemRequest = requestService.findById(itemDto.getRequest());
-        item.setId(new Random().nextLong());
+        id++;
+        item.setId(id);
         item.setName(itemDto.getName());
         item.setDescription(itemDto.getDescription());
         item.setAvailable(itemDto.isAvailable());

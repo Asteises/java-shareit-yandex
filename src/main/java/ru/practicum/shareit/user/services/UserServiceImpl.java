@@ -1,6 +1,6 @@
 package ru.practicum.shareit.user.services;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.handler.exceptions.UserNotFound;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -9,8 +9,9 @@ import ru.practicum.shareit.user.repositoryes.UserStorage;
 
 import java.util.List;
 
+//TODO Разобраться как правильно указывать конструкторы
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserStorage userStorage;
@@ -38,5 +39,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(long userId) throws UserNotFound {
         return userStorage.findById(userId);
+    }
+
+    @Override
+    public User findByEmail(String email) throws UserNotFound {
+        return userStorage.findByEmail(email);
     }
 }

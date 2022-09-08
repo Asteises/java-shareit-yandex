@@ -4,7 +4,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * TODO Sprint add-controllers.
@@ -15,7 +16,9 @@ import javax.validation.constraints.Email;
 @NoArgsConstructor
 public class User {
 
-    private long id;
+    private long id = 1;
     private String name;
-    private Email email;
+    @NotNull
+    @NotBlank
+    private String email;
 }
