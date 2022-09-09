@@ -25,26 +25,21 @@ public class UserDao implements UserStorage {
 
     @Override
     public User save(UserDto userDto) {
-        //TODO Хочется с помощью стрима проверить значение в значениях в мапе на наличие email
-        //TODO Какую ошибку нужно выкинуть, чтобы получить 404
         if (userDto.getEmail() != null
                 && !userDto.getEmail().isEmpty()
                 && EmailValidator.getInstance().isValid(userDto.getEmail())) {
-            //TODO Ищем существующего пользователя с таким же имейл
             User checkUser =
                     users.values().stream()
                             .filter(user -> user.getEmail().equals(userDto.getEmail()))
                             .findFirst()
                             .orElse(null);
-            for (User u: users.values()) {
-                if (u.getEmail().contains(userDto.getEmail())) {
-                    throw new IllegalArgumentException("Duplicated email");
-                }
+            if (checkUser == null) {
+                User user = userMapper.toUser(userDto);
+                user.setId(++userID);
+                users.put(user.getId(), user);
+                return user;
             }
-            User user = userMapper.toUser(userDto);
-            user.setId(++userID);
-            users.put(user.getId(), user);
-            return user;
+            throw new RuntimeException("Duplicated email");
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
@@ -99,10 +94,5 @@ public class UserDao implements UserStorage {
         } else {
             throw new UserNotFound(String.format("User %s not found", userId));
         }
-    }
-
-    @Override
-    public User findByEmail(String email) throws UserNotFound {
-        return null;
     }
 }

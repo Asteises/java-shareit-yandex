@@ -10,10 +10,10 @@ import ru.practicum.shareit.item.repositoryes.ItemStorage;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
+@RequiredArgsConstructor // Создает конструктор из тех полей которые нужны
 public class ItemServiceImpl implements ItemService {
 
-    private final ItemStorage itemStorage;
+    private final ItemStorage itemStorage; // Если стоит final для неинициализированного поля то конструктор нужен обязательно
 
     @Override
     public Item save(ItemDto itemDto, long userId) {

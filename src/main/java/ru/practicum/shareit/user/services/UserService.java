@@ -19,6 +19,4 @@ public interface UserService {
     List<User> findAll();
 
     User findById(long userId) throws UserNotFound;
-
-    User findByEmail(String email) throws UserNotFound;
 }

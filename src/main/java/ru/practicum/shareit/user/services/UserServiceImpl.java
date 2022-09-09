@@ -40,9 +40,4 @@ public class UserServiceImpl implements UserService {
     public User findById(long userId) throws UserNotFound {
         return userStorage.findById(userId);
     }
-
-    @Override
-    public User findByEmail(String email) throws UserNotFound {
-        return userStorage.findByEmail(email);
-    }
 }

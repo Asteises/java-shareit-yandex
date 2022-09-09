@@ -14,7 +14,7 @@ public class UserMapper {
         );
     }
 
-    public User toUser(UserDto userDto) throws RuntimeException {
+    public User toUser(UserDto userDto) {
         User user = new User();
         if (userDto.getName() != null) {
             user.setName(userDto.getName());

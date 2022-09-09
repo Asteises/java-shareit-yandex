@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@NoArgsConstructor // Пустой конструктор - обязательное условие для Entity
 public class User {
 
     private Long id;

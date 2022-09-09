@@ -89,7 +89,6 @@ public class ItemDao implements ItemStorage {
     @Override
     public List<Item> findAllByUserId(long userId) throws ItemNotFound, UserNotFound {
         try {
-            User user = userService.findById(userId);
             return items.values().stream()
                     .filter(item -> item.getOwner().getId().equals(userId)).collect(Collectors.toList());
         } catch (UserNotFound e) {
@@ -103,12 +102,12 @@ public class ItemDao implements ItemStorage {
         if (text != null && !text.isEmpty()) {
             Set<Item> buffer = new HashSet<>();
             buffer.addAll(items.values().stream()
-                    .filter(item -> item.getAvailable().equals(true))
                     .filter(item -> item.getName().toLowerCase().contains(text.toLowerCase()))
+                    .filter(item -> item.getAvailable().equals(true))
                     .collect(Collectors.toSet()));
             buffer.addAll(items.values().stream()
-                    .filter(item -> item.getAvailable().equals(true))
                     .filter(item -> item.getDescription().toLowerCase().contains(text.toLowerCase()))
+                    .filter(item -> item.getAvailable().equals(true))
                     .collect(Collectors.toSet()));
             findItems.addAll(buffer);
         }
