@@ -16,16 +16,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ItemController {
 
-    private ItemService itemService;
+    private final ItemService itemService;
 
     @PostMapping
-    public Item save(@RequestBody ItemDto itemDto, @RequestHeader("X-Later-User-Id") Long userId) {
+    public Item save(@RequestBody ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") long userId) {
         return itemService.save(itemDto, userId);
     }
 
     @PatchMapping("/{itemId}")
-    public Item patch(@RequestBody ItemDto itemDto, @PathVariable long itemId) {
-        return itemService.put(itemDto, itemId);
+    public Item patch(@RequestBody ItemDto itemDto, @PathVariable long itemId, @RequestHeader("X-Sharer-User-Id") long userId) {
+        return itemService.put(itemDto, itemId, userId);
     }
 
     @GetMapping("/{itemId}")
@@ -34,7 +34,12 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<Item> findAllByUserId(@RequestHeader("X-Later-User-Id") long userId) {
+    public List<Item> findAllByUserId(@RequestHeader("X-Sharer-User-Id") long userId) {
         return itemService.findAllByUserId(userId);
+    }
+
+    @GetMapping("/search")
+    public List<Item> findAllByItemName(@RequestParam String text) {
+        return itemService.findAllByItemName(text);
     }
 }

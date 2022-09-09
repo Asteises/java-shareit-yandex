@@ -21,8 +21,8 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item put(ItemDto itemDto, long itemId) throws ItemNotFound {
-        return itemStorage.put(itemDto, itemId);
+    public Item put(ItemDto itemDto, long itemId, long userId) throws ItemNotFound {
+        return itemStorage.put(itemDto, itemId, userId);
     }
 
     @Override
@@ -43,5 +43,10 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<Item> findAllByUserId(long userId) {
         return itemStorage.findAllByUserId(userId);
+    }
+
+    @Override
+    public List<Item> findAllByItemName(String text) {
+        return itemStorage.findAllByItemName(text);
     }
 }

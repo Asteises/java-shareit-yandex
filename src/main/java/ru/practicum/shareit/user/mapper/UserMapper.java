@@ -7,8 +7,6 @@ import ru.practicum.shareit.user.model.User;
 @Service
 public class UserMapper {
 
-    private static long id = 0;
-
     public UserDto toUserDto(User user) {
         return new UserDto(
                 user.getName(),
@@ -16,12 +14,14 @@ public class UserMapper {
         );
     }
 
-    public User toUser(UserDto userDto) {
+    public User toUser(UserDto userDto) throws RuntimeException {
         User user = new User();
-        id++;
-        user.setId(id);
-        user.setName(userDto.getName());
-        user.setEmail(userDto.getEmail());
+        if (userDto.getName() != null) {
+            user.setName(userDto.getName());
+        }
+        if (userDto.getEmail() != null) {
+            user.setEmail(userDto.getEmail());
+        }
         return user;
     }
 }

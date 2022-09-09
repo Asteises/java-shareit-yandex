@@ -12,7 +12,7 @@ public interface ItemStorage {
 
     Item save(ItemDto itemDto, long userId);
 
-    Item put(ItemDto itemDto, long itemId) throws ItemNotFound;
+    Item put(ItemDto itemDto, long itemId, long userId) throws ItemNotFound;
 
     void delete(long itemId) throws ItemNotFound;
 
@@ -21,4 +21,6 @@ public interface ItemStorage {
     Item findById(long itemId) throws ItemNotFound;
 
     List<Item> findAllByUserId(long userId) throws ItemNotFound;
+
+    List<Item> findAllByItemName(String text);
 }
