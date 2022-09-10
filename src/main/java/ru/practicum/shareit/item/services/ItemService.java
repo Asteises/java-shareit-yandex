@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ru.practicum.shareit.handler.exceptions.ItemNotFound;
 import ru.practicum.shareit.handler.exceptions.UserNotFound;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
 
@@ -18,11 +17,11 @@ public interface ItemService {
 
     void delete(long itemId) throws ItemNotFound;
 
-    List<Item> findAll();
+    List<ItemDto> findAll();
 
-    Item findById(long itemId) throws ItemNotFound;
+    ItemDto findById(long itemId) throws ItemNotFound;
 
-    List<Item> findAllByUserId(long userId);
+    List<ItemDto> findAllByUserId(long userId);
 
-    List<Item> findAllByItemName(@RequestParam String text);
+    List<ItemDto> findAllByItemName(String text);
 }

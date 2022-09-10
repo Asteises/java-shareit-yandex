@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.handler.exceptions.ItemNotFound;
 import ru.practicum.shareit.handler.exceptions.UserNotFound;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.services.ItemService;
 
 import java.util.List;
@@ -27,18 +26,23 @@ public class ItemController {
         return itemService.put(itemDto, itemId, userId);
     }
 
+    @DeleteMapping("/{itemId}")
+    public void deleteById(@PathVariable long itemId) {
+        itemService.delete(itemId);
+    }
+
     @GetMapping("/{itemId}")
-    public Item findById(@PathVariable long itemId) {
+    public ItemDto findById(@PathVariable long itemId) {
         return itemService.findById(itemId);
     }
 
     @GetMapping
-    public List<Item> findAllByUserId(@RequestHeader("X-Sharer-User-Id") long userId) {
+    public List<ItemDto> findAllByUserId(@RequestHeader("X-Sharer-User-Id") long userId) {
         return itemService.findAllByUserId(userId);
     }
 
     @GetMapping("/search")
-    public List<Item> findAllByItemName(@RequestParam String text) {
+    public List<ItemDto> findAllByItemName(@RequestParam String text) {
         return itemService.findAllByItemName(text);
     }
 }

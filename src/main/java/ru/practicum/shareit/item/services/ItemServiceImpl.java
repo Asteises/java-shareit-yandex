@@ -1,7 +1,9 @@
 package ru.practicum.shareit.item.services;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.handler.exceptions.ItemNotFound;
 import ru.practicum.shareit.handler.exceptions.UserNotFound;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -12,6 +14,7 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repositoryes.UserStorage;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor // Создает конструктор из тех полей которые нужны
@@ -24,14 +27,23 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto save(ItemDto itemDto, long userId) throws UserNotFound {
-        if (itemStorage.findById(userId) != null) {
+        if (userStorage.findById(userId) != null) {
             User user = userStorage.findById(userId);
             Item item = ItemMapper.toItem(itemDto);
+            if (item.getAvailable() == null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            }
+            if (item.getName() == null || item.getName().isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            }
+            if (item.getDescription() == null || item.getDescription().isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            }
             item.setId(++itemId);
             item.setOwner(user);
             return itemStorage.save(item);
         } else {
-            throw new UserNotFound("Юзер не найден");
+            throw new UserNotFound(String.format("User %s not found", userId));
         }
     }
 
@@ -61,26 +73,51 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public void delete(long itemId) throws ItemNotFound {
-        itemStorage.delete(itemId);
+        try {
+            itemStorage.delete(itemId);
+        } catch (ItemNotFound e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
     }
 
     @Override
-    public List<Item> findAll() {
-        return itemStorage.findAll();
+    public List<ItemDto> findAll() {
+        return itemStorage.findAll().stream()
+                .map(item -> new ItemDto(
+                        item.getId(),
+                        item.getName(),
+                        item.getDescription(),
+                        item.getAvailable())).collect(Collectors.toList());
     }
 
     @Override
-    public Item findById(long itemId) throws ItemNotFound {
-        return itemStorage.findById(itemId);
+    public ItemDto findById(long itemId) throws ItemNotFound {
+        try {
+            return ItemMapper.toItemDto(itemStorage.findById(itemId));
+        } catch (ItemNotFound e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
     }
 
     @Override
-    public List<Item> findAllByUserId(long userId) {
-        return itemStorage.findAllByUserId(userId);
+    public List<ItemDto> findAllByUserId(long userId) throws UserNotFound {
+        try {
+            return itemStorage.findAllByUserId(userId).stream().map(item -> new ItemDto(
+                    item.getId(),
+                    item.getName(),
+                    item.getDescription(),
+                    item.getAvailable())).collect(Collectors.toList());
+        } catch (UserNotFound e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
     }
 
     @Override
-    public List<Item> findAllByItemName(String text) {
-        return itemStorage.findAllByItemName(text);
+    public List<ItemDto> findAllByItemName(String text) {
+        return itemStorage.findAllByItemName(text).stream().map(item -> new ItemDto(
+                item.getId(),
+                item.getName(),
+                item.getDescription(),
+                item.getAvailable())).collect(Collectors.toList());
     }
 }

@@ -10,13 +10,13 @@ import java.util.List;
 @Service
 public interface UserService {
 
-    User save(UserDto userDto);
+    UserDto save(UserDto userDto);
 
-    User put(UserDto userDto, long userId) throws UserNotFound;
+    UserDto put(UserDto userDto, long userId) throws UserNotFound;
 
     void delete(long userId) throws UserNotFound;
 
-    List<User> findAll();
+    List<UserDto> findAll();
 
-    User findById(long userId) throws UserNotFound;
+    UserDto findById(long userId) throws UserNotFound;
 }

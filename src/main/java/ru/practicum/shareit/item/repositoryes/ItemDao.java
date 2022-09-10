@@ -1,16 +1,17 @@
 package ru.practicum.shareit.item.repositoryes;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.handler.exceptions.ItemNotFound;
 import ru.practicum.shareit.handler.exceptions.UserNotFound;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Repository
@@ -33,51 +34,35 @@ public class ItemDao implements ItemStorage {
 
     @Override
     public void delete(long itemId) throws ItemNotFound {
-        if (items.containsKey(itemId)) {
-            items.remove(itemId, items.get(itemId));
-        } else {
-            throw new ItemNotFound("Item не найден");
-        }
+        items.remove(itemId);
     }
 
     @Override
     public List<Item> findAll() {
-        return items.values().stream().toList();
+        return new ArrayList<>(items.values());
     }
 
     @Override
     public Item findById(long itemId) throws ItemNotFound {
-        if (items.containsKey(itemId)) {
-            return items.get(itemId);
-        } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
+        return items.get(itemId);
     }
 
     @Override
     public List<Item> findAllByUserId(long userId) throws ItemNotFound, UserNotFound {
-        try {
-            return items.values().stream()
-                    .filter(item -> item.getOwner().getId().equals(userId)).collect(Collectors.toList());
-        } catch (UserNotFound e) {
-            throw new ItemNotFound("Юзер не найден");
-        }
+        return items.values().stream()
+                .filter(item -> item.getOwner().getId().equals(userId))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<Item> findAllByItemName(String text) {
         List<Item> findItems = new ArrayList<>();
         if (text != null && !text.isEmpty()) {
-            Set<Item> buffer = new HashSet<>();
-            buffer.addAll(items.values().stream()
-                    .filter(item -> item.getName().toLowerCase().contains(text.toLowerCase()))
-                    .filter(item -> item.getAvailable().equals(true))
-                    .collect(Collectors.toSet()));
-            buffer.addAll(items.values().stream()
-                    .filter(item -> item.getDescription().toLowerCase().contains(text.toLowerCase()))
-                    .filter(item -> item.getAvailable().equals(true))
-                    .collect(Collectors.toSet()));
-            findItems.addAll(buffer);
+            findItems.addAll(items.values().stream()
+                    .filter(item -> (item.getName().toLowerCase().contains(text.toLowerCase()))
+                            || (item.getDescription().toLowerCase().contains(text.toLowerCase())))
+                    .filter(Item::getAvailable)
+                    .toList());
         }
         return findItems;
     }

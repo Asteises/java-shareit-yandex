@@ -1,10 +1,13 @@
 package ru.practicum.shareit.user.controllers;
 
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.validator.routines.EmailValidator;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.handler.exceptions.UserNotFound;
-import ru.practicum.shareit.user.services.UserService;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.services.UserService;
 
 import java.util.List;
 
@@ -12,22 +15,23 @@ import java.util.List;
  * TODO Sprint add-controllers.
  */
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(path = "/users")
 public class UserController {
 
     private final UserService userService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
-
     @PostMapping
-    public User save(@RequestBody UserDto userDto) {
-        return userService.save(userDto);
+    public UserDto save(@RequestBody UserDto userDto) {
+        if (!EmailValidator.getInstance().isValid(userDto.getEmail())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        } else {
+            return userService.save(userDto);
+        }
     }
 
     @PatchMapping("/{userId}")
-    public User put(@RequestBody UserDto userDto, @PathVariable long userId) throws UserNotFound {
+    public UserDto put(@RequestBody UserDto userDto, @PathVariable long userId) throws UserNotFound {
         return userService.put(userDto, userId);
     }
 
@@ -37,12 +41,12 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> findAll() {
+    public List<UserDto> findAll() {
         return userService.findAll();
     }
 
     @GetMapping("/{userId}")
-    public User findById(@PathVariable long userId) throws UserNotFound {
+    public UserDto findById(@PathVariable long userId) throws UserNotFound {
         return userService.findById(userId);
     }
 }
