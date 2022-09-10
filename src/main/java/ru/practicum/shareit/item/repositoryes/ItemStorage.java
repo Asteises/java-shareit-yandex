@@ -10,9 +10,9 @@ import java.util.List;
 @Repository
 public interface ItemStorage {
 
-    Item save(ItemDto itemDto, long userId);
+    ItemDto save(Item item);
 
-    Item put(ItemDto itemDto, long itemId, long userId) throws ItemNotFound;
+    ItemDto put(Item item, long itemId) throws ItemNotFound;
 
     void delete(long itemId) throws ItemNotFound;
 

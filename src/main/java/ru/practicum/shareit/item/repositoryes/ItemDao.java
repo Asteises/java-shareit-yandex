@@ -9,8 +9,6 @@ import ru.practicum.shareit.handler.exceptions.UserNotFound;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.services.UserService;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,48 +17,18 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ItemDao implements ItemStorage {
 
-    private final ItemMapper itemMapper;
-    private final UserService userService;
-
     private final Map<Long, Item> items = new HashMap<>();
-    private static long itemId = 0;
 
     @Override
-    public Item save(ItemDto itemDto, long userId) throws UserNotFound {
-        if (userService.findById(userId) != null) {
-            User user = userService.findById(userId);
-            Item item = itemMapper.toItem(itemDto);
-            item.setOwner(user);
-            item.setId(++itemId);
-            items.put(item.getId(), item);
-            return item;
-        } else {
-            throw new UserNotFound("Юзер не найден");
-        }
+    public ItemDto save(Item item) {
+        items.put(item.getId(), item);
+        return ItemMapper.toItemDto(item);
     }
 
     @Override
-    public Item put(ItemDto itemDto, long itemId, long userId) throws ItemNotFound {
-        if (items.containsKey(itemId)
-                && items.get(itemId).getOwner() != null
-                && items.get(itemId).getOwner().getId().equals(userId)) {
-            Item item = items.get(itemId);
-            item.setId(itemId);
-            item.setOwner(items.get(itemId).getOwner());
-            if (itemDto.getAvailable() != null) {
-                item.setAvailable(itemDto.getAvailable());
-            }
-            if (itemDto.getName() != null) {
-                item.setName(itemDto.getName());
-            }
-            if (itemDto.getDescription() != null) {
-                item.setDescription(itemDto.getDescription());
-            }
-            items.replace(itemId, item);
-            return item;
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
+    public ItemDto put(Item item, long itemId) throws ItemNotFound {
+        items.replace(itemId, item);
+        return ItemMapper.toItemDto(item);
     }
 
     @Override
